@@ -1,0 +1,70 @@
+CREATE DATABASE homework_6;
+
+USE homework_6;
+
+/*
+1. Создайте функцию, которая принимает кол-во сек и форматирует их в кол-во дней, часов, минут и секунд.
+Пример: 123456 ->'1 days 10 hours 17 minutes 36 seconds '
+*/
+
+DELIMITER $$
+CREATE FUNCTION full_time(num INT)
+RETURNS VARCHAR(100) 
+DETERMINISTIC
+BEGIN
+declare days int default 0;
+declare hours int default 0;
+declare mins int default 0;
+declare sec int default 0;
+declare str varchar(255) DEFAULT "";
+
+if num >= 86400 then 
+set days = FLOOR(num / 86400);
+set num = num - days * 86400;
+set str = CONCAT(str, days, " days ");
+end if;
+
+if num >= 3600 then
+set hours = FLOOR(num / 3600);
+set num = num - hours * 3600;
+set str = CONCAT(str, hours, " hours ");
+end if;
+
+if num >= 60 then
+set mins = FLOOR (num / 60 );
+set num = num - mins * 60;
+set str = CONCAT(str, mins, " minutes ");
+end if;
+
+if num > 0 then
+set sec = num;
+set str = CONCAT(str, sec, " seconds ");
+end if;
+return str;
+
+end $$
+
+delimiter ;
+
+select full_time(123456);
+
+/*
+2.Выведите только четные числа от 1 до 10 включительно.
+Пример: 2,4,6,8,10 (можно сделать через шаг +  2: х = 2, х+=2)
+*/
+
+delimiter //
+create procedure only_even_numbers(num int)
+begin
+declare i int default 2;
+declare result varchar(255);
+set result = "";
+while i <= num do
+set result = CONCAT(result, " ", i);
+set i = i + 2;
+end while;
+
+select result;
+end //
+
+call only_even_numbers(25);
